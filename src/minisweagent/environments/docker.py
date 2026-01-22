@@ -7,6 +7,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from minisweagent.environments.utils import init_debugger_task, install_debugger, setup_reproducing_script
+
 
 class DockerEnvironmentConfig(BaseModel):
     image: str
@@ -31,6 +33,16 @@ class DockerEnvironmentConfig(BaseModel):
     """Max duration to keep container running. Uses the same format as the sleep command."""
     pull_timeout: int = 120
     """Timeout in seconds for pulling images."""
+    setup_reproducing_script: bool = False
+    """Whether to set up reproducing script in the container."""
+    reproducing_script: dict[str, str] = {}
+    """Configuration for reproducing script setup."""
+    debugger_enabled: bool = False
+    """Whether to install debugger in the container."""
+    debugger_package: str = ""
+    """Path to the debugger package to install."""
+    debugger_default_task: str | None = None
+    """Default task to debug if none is specified."""
 
 
 class DockerEnvironment:
@@ -47,10 +59,32 @@ class DockerEnvironment:
         self.logger = logger or logging.getLogger("minisweagent.environment")
         self.container_id: str | None = None
         self.config = config_class(**kwargs)
+        self.extra_vars: dict[str, str] = {}
         self._start_container()
 
+        if self.config.setup_reproducing_script:
+            success, script_vars = setup_reproducing_script(self.config, self.execute, self.logger)
+            if not success:
+                raise RuntimeError("Failed to set up reproducing script in the container.")
+            self.extra_vars.update(script_vars)
+
+        if self.config.debugger_enabled:
+            success, debugger_vars = install_debugger(self.config, self.execute, self.container_id,self.config.executable, self.logger)
+            if not success:
+                raise RuntimeError("Failed to install debugger in the container.")
+            self.extra_vars.update(debugger_vars)
+        
+        if self.config.debugger_enabled and self.config.debugger_default_task:
+            success, debugger_task_vars = init_debugger_task(self.execute, self.config.debugger_default_task, self.logger)
+            if success:
+                self.extra_vars.update(debugger_task_vars)
+
+
     def get_template_vars(self) -> dict[str, Any]:
-        return self.config.model_dump()
+        vars = self.config.model_dump()
+        if self.extra_vars:
+            vars.update(self.extra_vars)
+        return vars
 
     def _start_container(self):
         """Start the Docker container and return the container ID."""

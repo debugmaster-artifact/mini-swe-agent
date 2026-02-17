@@ -11,16 +11,16 @@
     Make sure to follow the dev setup instructions in [quickstart.md](../quickstart.md).
 
 We provide several different entry points to the agent,
-for example [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py),
-or the [default when calling `mini`](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py).
+for example [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run/hello_world.py),
+or the [default when calling `mini`](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run/mini.py).
 
 Want to cook up your custom version and the config is not enough?
 Just follow the recipe below:
 
-1. What's the control flow you need? Pick an [agent class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents) (e.g., [simplest example](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py), [with human in the loop](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/interactive.py))
-2. How should actions be executed? Pick an [environment class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments) (e.g., [local](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py), or [docker](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/docker.py))
-3. How is the LM queried? Pick a [model class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models) (e.g., [litellm](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py))
-4. How to invoke the agent? Bind them all together in a [run script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run), possibly reading from a [config](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/config) (e.g., [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py), or [`mini` entry point](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py))
+1. What's the control flow you need? Pick an [agent class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/agents) (e.g., [simplest example](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/agents/default.py), [with human in the loop](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/agents/interactive.py))
+2. How should actions be executed? Pick an [environment class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/environments) (e.g., [local](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/environments/local.py), or [docker](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/environments/docker.py))
+3. How is the LM queried? Pick a [model class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/models) (e.g., [litellm](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/models/litellm_model.py))
+4. How to invoke the agent? Bind them all together in a [run script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run), possibly reading from a [config](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/config) (e.g., [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run/hello_world.py), or [`mini` entry point](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run/mini.py))
 
 We aim to keep all of these components very simple, but offer lots of choice between them -- enough to cover a broad range of
 things that you might want to do.
@@ -34,9 +34,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Hello world (use automatic model selection)"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
-    from minisweagent.models import get_model
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.default import DefaultAgent
+    from debugmaster.models import get_model
+    from debugmaster.environments.local import LocalEnvironment
 
     model_name = "anthropic/claude-sonnet-4-5-20250929"
 
@@ -50,9 +50,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Hello world (Anthropic)"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
-    from minisweagent.models.anthropic_model import AnthropicModel
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.default import DefaultAgent
+    from debugmaster.models.anthropic_model import AnthropicModel
+    from debugmaster.environments.local import LocalEnvironment
 
     model_name = "anthropic/claude-sonnet-4-5-20250929"
 
@@ -66,9 +66,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Hello world (Litellm)"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
-    from minisweagent.models.litellm_model import LitellmModel
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.default import DefaultAgent
+    from debugmaster.models.litellm_model import LitellmModel
+    from debugmaster.environments.local import LocalEnvironment
 
     model_name = "gpt-4o"
 
@@ -84,7 +84,7 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Hello world with local execution"
 
     ```python
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.environments.local import LocalEnvironment
 
     agent = DefaultAgent(
         LitellmModel(model_name=model_name),
@@ -95,7 +95,7 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Hello world with docker execution"
 
     ```python
-    from minisweagent.environments.docker import DockerEnvironment
+    from debugmaster.environments.docker import DockerEnvironment
 
     agent = DefaultAgent(
         LitellmModel(model_name=model_name),
@@ -108,9 +108,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Default agent"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
-    from minisweagent.models import get_model
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.default import DefaultAgent
+    from debugmaster.models import get_model
+    from debugmaster.environments.local import LocalEnvironment
 
     agent = DefaultAgent(
         get_model(input_model_name=model_name),
@@ -121,9 +121,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Human in the loop"
 
     ```python
-    from minisweagent.agents.interactive import InteractiveAgent
-    from minisweagent.models import get_model
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.interactive import InteractiveAgent
+    from debugmaster.models import get_model
+    from debugmaster.environments.local import LocalEnvironment
 
     agent = InteractiveAgent(
         LitellmModel(model_name=model_name),
@@ -134,9 +134,9 @@ You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` envi
 === "Human in the loop (textual)"
 
     ```python
-    from minisweagent.agents.interactive_textual import TextualAgent
-    from minisweagent.models import get_model
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.interactive_textual import TextualAgent
+    from debugmaster.models import get_model
+    from debugmaster.environments.local import LocalEnvironment
 
     agent = TextualAgent(
         LitellmModel(model_name=model_name),
@@ -154,7 +154,7 @@ An agent that uses python function for some actions:
 === "Subclassing the agent"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
+    from debugmaster.agents.default import DefaultAgent
     import shlex
 
     def python_function(*args) -> dict:
@@ -173,7 +173,7 @@ An agent that uses python function for some actions:
 === "Subclassing the environment"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent
+    from debugmaster.agents.default import DefaultAgent
     import shlex
 
     def python_function(*args) -> dict:
@@ -198,7 +198,7 @@ An agent that exits when the `submit` command is issued:
 === "Subclassing the agent"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent, Submitted
+    from debugmaster.agents.default import DefaultAgent, Submitted
 
     class AgentQuitsOnSubmit(DefaultAgent):
         def execute_action(self, action: dict) -> dict:
@@ -212,8 +212,8 @@ An agent that exits when the `submit` command is issued:
 === "Subclassing the environment"
 
     ```python
-    from minisweagent.agents.default import DefaultAgent, Submitted
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.agents.default import DefaultAgent, Submitted
+    from debugmaster.environments.local import LocalEnvironment
 
     class EnvironmentQuitsOnSubmit(LocalEnvironment):
         def execute(self, command: str, cwd: str = "") -> dict:
@@ -235,7 +235,7 @@ An agent that validates actions before execution (also an example of how to use 
     ```python
     import re
     from dataclasses import dataclass
-    from minisweagent.agents.default import (
+    from debugmaster.agents.default import (
         DefaultAgent, NonTerminatingException, DefaultAgentConfig
     )
 
@@ -263,10 +263,10 @@ An agent that validates actions before execution (also an example of how to use 
     ```python
     import re
     from dataclasses import dataclass
-    from minisweagent.agents.default import (
+    from debugmaster.agents.default import (
         DefaultAgent, NonTerminatingException, DefaultAgentConfig
     )
-    from minisweagent.environments.local import LocalEnvironment
+    from debugmaster.environments.local import LocalEnvironment
 
     @dataclass
     class EnvironmentWithForbiddenPatternsConfig(LocalEnvironmentConfig):

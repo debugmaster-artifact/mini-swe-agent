@@ -2,12 +2,12 @@
 
 !!! note "LiteLLM Response API Model class"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_response_api_model.py)
+    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/debugmaster/models/litellm_response_api_model.py)
 
     ??? note "Full source code"
 
         ```python
-        --8<-- "src/minisweagent/models/litellm_response_api_model.py"
+        --8<-- "src/debugmaster/models/litellm_response_api_model.py"
         ```
 
 !!! tip "When to use this model"
@@ -37,7 +37,7 @@ Or via command line:
 mini -m "openai/gpt-5-mini" --model-class litellm_response
 ```
 
-::: minisweagent.models.litellm_response_api_model
+::: debugmaster.models.litellm_response_api_model
 
 {% include-markdown "../../_footer.md" %}
 

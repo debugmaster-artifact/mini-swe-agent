@@ -1,0 +1,47 @@
+tool_name: debugger
+package_name: rdb
+version: 0.1.0
+source: "/home/ruixinw/debugmaster_artifact/aclarr_experiments/rdb"
+py_standalone: null
+installation_script:
+  - "pip install ."
+setup_script:
+  - "{% if debugger_default_task %}python -m rdb.server --daemon {{debugger_default_task}}{% endif %}"
+  - "{% if debugger_default_task %}sleep 1{% endif %}"
+  - "{% if debugger_default_task %}python -m rdb.client connect{% endif %}"
+  - "python -m rdb.client command where"
+description: Pdb debugger support.
+executables:
+  # launch-debugger:
+  #   command: "python -m rdb.apps.launch"
+  #   help: |
+  #     Usage: launch-debugger <file_path>
+  #     Launch a Pdb debugger session on a Python program.
+  debugger-commands: 
+    command: "python -m rdb.client command"
+    help: |
+      Run a series of Pdb commands.
+
+      Usage: `debugger-commands "<command_1>" "<command_2>" ...`
+      Examples: 
+        - `debugger-commands "next" "print(a)"`: execute the current line, and prints the value of `a`.
+        - `debugger-commands "up" "down"`: move up and down in the current stack frame.
+        - `debugger-commands "<any_executable_python_statement>"`: execute a single-line python statement at the debugger's location.
+        - `debugger-commands "step"`: step into a function call.
+        - `debugger-commands "clear 1"`: clear a breakpoint by its index.
+        - `debugger-commands "restart"`: restart the debugging session (breakpoints will *not* be preserved).
+      
+      Pro Tips:
+        - Use debugger commands to explore the runtime value of a variable or valid expression.
+          Example: `debugger-commands "break filename.py:42" "continue" "print(b)"`: set a breakpoint, runs the program to stop at the breakpoint, and prints the value of `b`.
+        - Use debugger commands to step into a function that you fails to navigate to using static tools.
+          Example: a function (or class constructor) is called at line 5 of `filename.py`.
+          Run `debugger-commands "b filename.py:5" "c" "step" "list ."` to stop at the function call site, step into the function, and print the code snippets of the function.
+  debugger-lookup-value:
+    command: "python -m rdb.apps.lookup"
+    help: |
+      A shortcut command to lookup the runtime value of a variable or an expression at a specific location.
+      This command will output the value of every iteration if the line is executed multiple times.
+      Note that the value will be collected **before** the line of code is exexcuted.
+
+      Usage: `debugger-lookup-value <file_path> <line_number> <expression>`

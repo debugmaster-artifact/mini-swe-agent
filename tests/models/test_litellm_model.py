@@ -6,10 +6,10 @@ from unittest.mock import Mock, patch
 import litellm
 import pytest
 
-from minisweagent.models import GLOBAL_MODEL_STATS
-from minisweagent.models.litellm_model import LitellmModel
-from minisweagent.models.litellm_response_api_model import LitellmResponseAPIModel
-from minisweagent.models.utils.openai_utils import coerce_responses_text
+from debugmaster.models import GLOBAL_MODEL_STATS
+from debugmaster.models.litellm_model import LitellmModel
+from debugmaster.models.litellm_response_api_model import LitellmResponseAPIModel
+from debugmaster.models.utils.openai_utils import coerce_responses_text
 
 
 def test_authentication_error_enhanced_message():

@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from minisweagent.models import GLOBAL_MODEL_STATS
-from minisweagent.models.portkey_response_api_model import PortkeyResponseAPIModel
+from debugmaster.models import GLOBAL_MODEL_STATS
+from debugmaster.models.portkey_response_api_model import PortkeyResponseAPIModel
 
 
 def test_response_api_model_basic_query():
@@ -14,10 +14,10 @@ def test_response_api_model_basic_query():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         from openai.types.responses.response_output_message import ResponseOutputMessage
@@ -51,10 +51,10 @@ def test_response_api_model_with_previous_id():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         from openai.types.responses.response_output_message import ResponseOutputMessage
@@ -108,10 +108,10 @@ def test_response_api_model_output_text_field():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         mock_response = Mock()
@@ -134,10 +134,10 @@ def test_response_api_model_multiple_output_messages():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         from openai.types.responses.response_output_message import ResponseOutputMessage
@@ -170,10 +170,10 @@ def test_response_api_model_cost_tracking():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.05
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.05
         ),
     ):
         mock_response = Mock()
@@ -201,10 +201,10 @@ def test_response_api_model_zero_cost_assertion():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.0
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.0
         ),
     ):
         mock_response = Mock()
@@ -227,12 +227,12 @@ def test_response_api_model_cache_control():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
-        patch("minisweagent.models.portkey_response_api_model.set_cache_control") as mock_cache,
+        patch("debugmaster.models.portkey_response_api_model.set_cache_control") as mock_cache,
     ):
         mock_response = Mock()
         mock_response.id = "resp_cache"
@@ -257,10 +257,10 @@ def test_response_api_model_with_model_kwargs():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         mock_response = Mock()
@@ -285,10 +285,10 @@ def test_response_api_model_retry_on_rate_limit():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key", "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "2"}),
         patch(
-            "minisweagent.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
+            "debugmaster.models.portkey_response_api_model.litellm.cost_calculator.completion_cost", return_value=0.01
         ),
     ):
         from openai.types.responses.response_output_message import ResponseOutputMessage
@@ -328,7 +328,7 @@ def test_response_api_model_no_retry_on_type_error():
     mock_portkey_class.return_value = mock_client
 
     with (
-        patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class),
+        patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class),
         patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}),
     ):
         mock_client.responses.create.side_effect = TypeError("Invalid type")

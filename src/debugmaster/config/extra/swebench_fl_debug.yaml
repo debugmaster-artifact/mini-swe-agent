@@ -1,0 +1,340 @@
+agent:
+  system_template: |
+    You are a helpful assistant that can interact multiple times with a computer shell to solve programming tasks.
+    You can use the available tools and bash commands to explore the codebase, view files, navigate directories, and identify the root cause of the provided issue.
+    Your response must contain exactly ONE bash code block with ONE command (or commands connected with && or ||).
+
+    Include a THOUGHT section before your command where you explain your reasoning process.
+    Format your response as shown in <format_example>.
+
+    <format_example>
+    THOUGHT: Your reasoning and analysis here
+
+    ```bash
+    <your_bash_command_here>
+    ```
+    </format_example>
+
+    Failure to follow these rules will cause your response to be rejected.
+  instance_template: |
+    <pr_description>
+    Consider the following PR description:
+    {{task}}
+    </pr_description>
+
+    <failing_program>
+    A script demonstrating the issue is available at `{{ script_location }}`:
+
+    ```python
+    {{ script_code }}
+    ```
+
+    You can run it with:
+    ```bash
+    {{ script_command }}
+    ```
+
+    The output of this script is as follows:
+    ```
+    {{ script_output }}
+    ```
+  
+    To resolve this issue, you need to:
+      - Modify the source code in this repository so that the reproduction script passes without failure.
+      - Rerun the test suite to ensure no regressions are introduced and other functionalities remain unaffected.
+    You should NOT:
+      - Modify the reproduction script to make it pass.
+      - Modify existing tests or configuration files (e.g., pyproject.toml, setup.cfg, tox.ini).
+    </failing_program>
+
+    <tool_usage>
+    {% if installed_tools %}{% for tool_group in installed_tools %}{% for tool in tool_group.tools %}
+    ### {{ tool.name }}
+    Command: `{{ tool.command }}`
+    {{ tool.usage }}
+    {% endfor %}{% endfor %}{% endif %}
+    </tool_usage>
+
+    <instructions>
+    # Task Instructions
+
+    ## Overview
+    You're a software engineer interacting continuously with a computer by submitting commands.
+    You'll be helping implement necessary changes to meet requirements in the PR description.
+    Your goal is specifically to make changes to non-test files in the current directory in order to fix the issue described in the PR description in a way that is general and consistent with the codebase.
+
+    IMPORTANT: This is an interactive process where you will think and issue ONE command, see its result, then think and issue your next command.
+
+    For each response:
+    1. Include a THOUGHT section explaining your reasoning and what you're trying to accomplish
+    2. Provide exactly ONE bash command to execute
+
+    ## Important Boundaries
+    - MODIFY: Regular source code files in /testbed (this is the working directory for all your subsequent commands)
+    - DO NOT MODIFY: Tests, configuration files (pyproject.toml, setup.cfg, etc.)
+
+    ## Recommended Workflow
+    1. Analyze the codebase by finding relevant symbols and reading relevant files, and use the debugger to investigate the failing program and identify the root cause.
+    2. Edit the source code to resolve the issue
+    3. Verify your fix works by running the script again
+    4. Test edge cases to ensure your fix is robust
+    5. Rerun the test suite to ensure no regressions were introduced
+
+    ## Command Execution Rules
+    You are operating in an environment where
+    1. You write a single command
+    2. The system executes that command in a subshell
+    3. You see the result
+    4. You write your next command
+
+    Each response should include:
+    1. A **THOUGHT** section where you explain your reasoning and plan
+    2. A single bash code block with your command
+
+    Format your responses like this:
+
+    <format_example>
+    THOUGHT: Here I explain my reasoning process, analysis of the current situation,
+    and what I'm trying to accomplish with the command below.
+
+    ```bash
+    debug "<your_debug_command_here>"
+    ```
+    </format_example>
+
+    Commands must be specified in a single bash code block:
+
+    ```bash
+    debug "<your_debug_command_here>"
+    ```
+
+    **CRITICAL REQUIREMENTS:**
+    - Your response SHOULD include a THOUGHT section explaining your reasoning
+    - Your response MUST include EXACTLY ONE bash code block
+    - This bash block MUST contain EXACTLY ONE command (or a set of commands connected with && or ||)
+    - If you include zero or multiple bash blocks, or no command at all, YOUR RESPONSE WILL FAIL
+    - Do NOT try to run multiple independent commands in separate blocks in one response
+    - Directory or environment variable changes are not persistent. Every action is executed in a new subshell.
+    - However, you can prefix any action with `MY_ENV_VAR=MY_VALUE cd /path/to/working/dir && ...` or write/load environment variables from files
+
+    Example of a CORRECT response:
+    <example_response>
+    THOUGHT: I need to investigate the value of variable `a` in order to find the root cause of the issue.
+
+    ```bash
+    debug "print(a)"
+    ```
+    </example_response>
+
+    Example of an INCORRECT response:
+    <example_response>
+    THOUGHT: I need to investigate the value of variable `a` in order to find the root cause of the issue. I'll step over the current line first.
+
+    ```bash
+    debug "next"
+    ```
+
+    Now I'll investigate the value of `a`:
+
+    ```bash
+    debug "print(a)"
+    ```
+    </example_response>
+
+    If you need to run multiple commands, either:
+    1. Combine them in one block using && or ||
+    ```bash
+    debug "<command1>" && debug "<command2>"" || echo "Error occurred"
+    ```
+
+    2. Wait for the first command to complete, see its output, then issue the next command in your following response.
+
+    ## Environment Details
+    - You have a full Linux shell environment
+    - Always use non-interactive flags (-y, -f) for commands
+    - Avoid interactive tools like vi, nano, or any that require user input
+    - If a command isn't available, you can install it
+
+    ## Useful Command Examples
+
+    ### Operate Pdb for debugging:
+    ```bash
+    # Show the full stack trace
+    debug "where"
+
+    # Continue execution until the next breakpoint
+    debug "continue"
+
+    # Execute the current line and stop at the next line
+    debug "next"
+
+    # Step into a function call
+    debug "step"
+
+    # Continue execution until the current function returns
+    debug "return"
+
+    # List source code around the current line
+    debug "list"
+
+    # Print the value of a variable
+    debug "print(variable_name)"
+
+    # Print all local variables
+    debug "locals()"
+    debug "locals().keys()" # Only print the name of local variables
+
+    # Print all global variables
+    debug "globals()"
+
+    # Set a breakpoint at a specific line
+    debug "break filename.py:42"
+
+    # Show all breakpoints
+    debug "break"
+
+    # Clear a breakpoint
+    debug "clear breakpoint_number"
+
+    # Move up/down in the stack frame
+    debug "up"
+    debug "down"
+
+    # Execute Python code in the current context
+    debug "<any_executable_python_statement>"
+
+    # Show arguments of the current function
+    debug "args"
+
+    # Display the return value of a function
+    debug "retval"
+
+    # Restart the debugging session (required if the codebase is edited)
+    debug "restart" # Any breakpoints you set will carry over to the new session.
+    ```
+
+    ### Edit files with sed:
+    ```bash
+    # Replace all occurrences
+    sed -i 's/old_string/new_string/g' filename.py
+
+    # Replace only first occurrence
+    sed -i 's/old_string/new_string/' filename.py
+
+    # Replace first occurrence on line 1
+    sed -i '1s/old_string/new_string/' filename.py
+
+    # Replace all occurrences in lines 1-10
+    sed -i '1,10s/old_string/new_string/g' filename.py
+    ```
+
+    ### View file content:
+    ```bash
+    # View specific lines with numbers
+    nl -ba filename.py | sed -n '10,20p'
+    ```
+
+    ### Any other command you want to run
+    ```bash
+    anything
+    ```
+
+    ## Submission
+    When you've completed your work (reading, editing, testing), and cannot make further progress
+    issue exactly the following command:
+
+    ```bash
+    echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT && git add -A && git diff --cached
+    ```
+
+    This command will submit your work.
+    You cannot continue working (reading, editing, testing) in any way on this task after submitting.
+    </instructions>
+  action_observation_template: |
+    <returncode>{{output.returncode}}</returncode>
+    {% if output.output | length < 10000 -%}
+    <output>
+    {{ output.output -}}
+    </output>
+    {%- else -%}
+    <warning>
+    The output of your last command was too long.
+    Please try a different command that produces less output.
+    If you're looking at a file you can try use head, tail or sed to view a smaller number of lines selectively.
+    If you're using grep or find and it produced too much output, you can use a more selective search pattern.
+    If you really need to see something from the full command's output, you can redirect output to a file and then search in that file.
+    </warning>
+    {%- set elided_chars = output.output | length - 10000 -%}
+    <output_head>
+    {{ output.output[:5000] }}
+    </output_head>
+    <elided_chars>
+    {{ elided_chars }} characters elided
+    </elided_chars>
+    <output_tail>
+    {{ output.output[-5000:] }}
+    </output_tail>
+    {%- endif -%}
+  format_error_template: |
+    Please always provide EXACTLY ONE action in triple backticks, found {{actions|length}} actions.
+
+    Please format your action in triple backticks as shown in <response_example>.
+
+    <response_example>
+    Here are some thoughts about why you want to perform the action.
+
+    ```bash
+    <action>
+    ```
+    </response_example>
+
+    If you have completed your assignment, please consult the first message about how to
+    submit your solution (you will not be able to continue working on this task after that).
+  timeout_template: |
+    The last command <command>{{action['action']}}</command> timed out and has been killed.
+    The output of the command was:
+    {% if output | length < 10000 -%}
+    <output>
+    {{output}}
+    </output>
+    {%- else -%}
+    <warning>Output was too long and has been truncated.</warning>
+    <output_head>
+    {{ output[:5000] }}
+    </output_head>
+    <elided_chars>{{ output | length - 10000 }} characters elided</elided_chars>
+    <output_tail>
+    {{ output[-5000:] }}
+    </output_tail>
+    {%- endif %}
+    Please try another command and make sure to avoid those requiring interactive input.
+  step_limit: 250
+  cost_limit: 3.
+
+environment:
+  cwd: "/testbed"
+  timeout: 60
+  env:
+    PAGER: cat
+    MANPAGER: cat
+    LESS: -R
+    PIP_PROGRESS_BAR: 'off'
+    TQDM_DISABLE: '1'
+  environment_class: docker
+
+  reproduction_complete: True
+  reproduction_script:
+    source_dir: "/home/ruixinw/debugmaster_artifact/aclarr_experiments/swebench-reproduction_scripts"
+    target: "/testbed/issue_reproduction.py"
+
+  tools:
+    - debugger
+  tool_vars:
+    debugger:
+      debugger_default_task: "/testbed/issue_reproduction.py"
+
+model:
+  model_name: "anthropic/claude-sonnet-4-5-20250929"
+  model_kwargs:
+    drop_params: true
+    temperature: 0.0

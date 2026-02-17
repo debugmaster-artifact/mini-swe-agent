@@ -4,9 +4,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
+pytest.importorskip("pytest_asyncio", reason="pytest-asyncio not installed")
 import typer
 
-from minisweagent.run.extra.inspector import TrajectoryInspector, main
+from debugmaster.run.extra.inspector import TrajectoryInspector, main
 
 
 def get_screen_text(app: TrajectoryInspector) -> str:
@@ -314,7 +316,7 @@ async def test_trajectory_inspector_quit_binding(temp_trajectory_files):
         # App should exit gracefully (the test framework handles this)
 
 
-@patch("minisweagent.run.extra.inspector.TrajectoryInspector.run")
+@patch("debugmaster.run.extra.inspector.TrajectoryInspector.run")
 def test_main_with_single_file(mock_run, temp_trajectory_files):
     """Test main function with a single trajectory file."""
     valid_file = temp_trajectory_files[0]  # simple.traj.json
@@ -326,7 +328,7 @@ def test_main_with_single_file(mock_run, temp_trajectory_files):
     assert mock_run.call_count == 1
 
 
-@patch("minisweagent.run.extra.inspector.TrajectoryInspector.run")
+@patch("debugmaster.run.extra.inspector.TrajectoryInspector.run")
 def test_main_with_directory_containing_trajectories(mock_run, temp_trajectory_files):
     """Test main function with a directory containing trajectory files."""
     directory = temp_trajectory_files[0].parent
@@ -336,7 +338,7 @@ def test_main_with_directory_containing_trajectories(mock_run, temp_trajectory_f
     mock_run.assert_called_once()
 
 
-@patch("minisweagent.run.extra.inspector.TrajectoryInspector.run")
+@patch("debugmaster.run.extra.inspector.TrajectoryInspector.run")
 def test_main_with_directory_no_trajectories(mock_run):
     """Test main function with a directory containing no trajectory files."""
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -351,7 +353,7 @@ def test_main_with_directory_no_trajectories(mock_run):
         mock_run.assert_not_called()
 
 
-@patch("minisweagent.run.extra.inspector.TrajectoryInspector.run")
+@patch("debugmaster.run.extra.inspector.TrajectoryInspector.run")
 def test_main_with_nonexistent_path(mock_run):
     """Test main function with a path that doesn't exist."""
     nonexistent_path = "/this/path/does/not/exist"
@@ -362,7 +364,7 @@ def test_main_with_nonexistent_path(mock_run):
     mock_run.assert_not_called()
 
 
-@patch("minisweagent.run.extra.inspector.TrajectoryInspector.run")
+@patch("debugmaster.run.extra.inspector.TrajectoryInspector.run")
 def test_main_with_current_directory_default(mock_run, temp_trajectory_files):
     """Test main function with default argument (current directory)."""
     directory = temp_trajectory_files[0].parent

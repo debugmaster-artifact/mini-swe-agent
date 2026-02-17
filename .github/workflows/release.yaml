@@ -28,8 +28,8 @@ jobs:
     - name: Check version matches release tag
       if: github.event_name == 'release'
       run: |
-        # Extract version from src/minisweagent/__init__.py
-        PACKAGE_VERSION=$(python -c "import sys; sys.path.insert(0, 'src'); from minisweagent import __version__; print(__version__)")
+        # Extract version from src/debugmaster/__init__.py
+        PACKAGE_VERSION=$(python -c "import sys; sys.path.insert(0, 'src'); from debugmaster import __version__; print(__version__)")
 
         # Extract tag name (remove 'v' prefix if present)
         TAG_NAME="${{ github.event.release.tag_name }}"
@@ -42,7 +42,7 @@ jobs:
         if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
           echo "❌ ERROR: Version mismatch!"
           echo "Package version ($PACKAGE_VERSION) does not match release tag ($TAG_VERSION)"
-          echo "Please update __version__ in src/minisweagent/__init__.py to match the release tag"
+          echo "Please update __version__ in src/debugmaster/__init__.py to match the release tag"
           exit 1
         fi
 

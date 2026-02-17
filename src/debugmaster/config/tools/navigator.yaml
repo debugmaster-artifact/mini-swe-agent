@@ -1,0 +1,37 @@
+tool_name: navigator
+package_name: rls
+version: n0.1.0l
+source: "/home/ruixinw/debugmaster_artifact/aclarr_experiments/rls"
+py_standalone: 3.9
+installation_script:
+  - "pip install --upgrade pip"
+  - "pip install ."
+setup_script:
+  - "python -m rls.server -d {{cwd}}"
+  - "sleep 1"
+  - "python -m rls.client -p {{cwd}} --help"
+description: Code navigation support.
+executables:
+  navigator-get-definition: 
+    command: "python -m rls.client -p {{cwd}} get_definition"
+    help: |
+      Get the definition of a symbol at a specific location.
+      The symbol can be a used variable or a called function.
+
+      Usage: `navigator-get-definition <file_path> <line_number> <symbol_name>`
+      Example: `navigator-get-definition example_file.py 10 foo`.
+  navigator-get-references:
+    command: "python -m rls.client -p {{cwd}} get_references"
+    help: |
+      Get the references of a symbol at a specific location.
+      The symbol can be a defined variable or a defined function or class.
+
+      Usage: `navigator-get-references <file_path> <line_number> <symbol_name>`
+      Example: `navigator-get-references another_example_file.py 20 Boo`.
+  navigator-search:
+    command: "python -m rls.client -p {{cwd}} search"
+    help: |
+      Search for a symbol in the workspace.
+
+      Usage: `navigator-search <symbol_name>`
+      Notice: If you want to search for a class `Bar`, simply call `navigator-search Bar`. *No need to* search for "class Bar".

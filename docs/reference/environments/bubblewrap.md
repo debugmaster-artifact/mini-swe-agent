@@ -1,5 +1,5 @@
 # Bubblewrap
 
-::: minisweagent.environments.extra.bubblewrap
+::: debugmaster.environments.extra.bubblewrap
 
 {% include-markdown "../../_footer.md" %}

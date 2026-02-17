@@ -2,10 +2,10 @@ import json
 import tempfile
 from pathlib import Path
 
-from minisweagent.agents.default import DefaultAgent
-from minisweagent.environments.local import LocalEnvironment
-from minisweagent.models.test_models import DeterministicModel
-from minisweagent.run.utils.save import save_traj
+from debugmaster.agents.default import DefaultAgent
+from debugmaster.environments.local import LocalEnvironment
+from debugmaster.models.test_models import DeterministicModel
+from debugmaster.run.utils.save import save_traj
 
 
 def test_save_traj_includes_class_names():
@@ -13,7 +13,7 @@ def test_save_traj_includes_class_names():
     # Load default config
     import yaml
 
-    config_path = Path("src/minisweagent/config/default.yaml")
+    config_path = Path("src/debugmaster/config/default.yaml")
     with open(config_path) as f:
         default_config = yaml.safe_load(f)["agent"]
 
@@ -48,9 +48,9 @@ def test_save_traj_includes_class_names():
         assert "environment_type" in config
 
         # Verify the actual class names with module paths
-        assert config["agent_type"] == "minisweagent.agents.default.DefaultAgent"
-        assert config["model_type"] == "minisweagent.models.test_models.DeterministicModel"
-        assert config["environment_type"] == "minisweagent.environments.local.LocalEnvironment"
+        assert config["agent_type"] == "debugmaster.agents.default.DefaultAgent"
+        assert config["model_type"] == "debugmaster.models.test_models.DeterministicModel"
+        assert config["environment_type"] == "debugmaster.environments.local.LocalEnvironment"
 
         # Verify other expected data is still present
         assert saved_data["info"]["exit_status"] == "Submitted"

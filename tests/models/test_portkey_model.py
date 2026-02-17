@@ -3,13 +3,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from minisweagent.models import GLOBAL_MODEL_STATS
-from minisweagent.models.portkey_model import PortkeyModel, PortkeyModelConfig
+from debugmaster.models import GLOBAL_MODEL_STATS
+from debugmaster.models.portkey_model import PortkeyModel, PortkeyModelConfig
 
 
 def test_portkey_model_missing_api_key():
     """Test that PortkeyModel raises ValueError when no API key is provided."""
-    with patch("minisweagent.models.portkey_model.Portkey"):
+    with patch("debugmaster.models.portkey_model.Portkey"):
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(ValueError, match="Portkey API key is required"):
                 PortkeyModel(model_name="gpt-4o")
@@ -28,7 +28,7 @@ def test_portkey_model_initialization():
     mock_client = MagicMock()
     mock_portkey_class.return_value = mock_client
 
-    with patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class):
+    with patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class):
         with patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key", "PORTKEY_VIRTUAL_KEY": "test-virtual"}):
             model = PortkeyModel(model_name="gpt-4o")
 
@@ -56,9 +56,9 @@ def test_portkey_model_query():
     mock_client.chat.completions.create.return_value = mock_response
     mock_portkey_class.return_value = mock_client
 
-    with patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class):
+    with patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class):
         with patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}):
-            with patch("minisweagent.models.portkey_model.litellm.cost_calculator.completion_cost") as mock_cost:
+            with patch("debugmaster.models.portkey_model.litellm.cost_calculator.completion_cost") as mock_cost:
                 mock_cost.return_value = 0.01
 
                 model = PortkeyModel(model_name="gpt-4o")
@@ -84,7 +84,7 @@ def test_portkey_model_get_template_vars():
     mock_client = MagicMock()
     mock_portkey_class.return_value = mock_client
 
-    with patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class):
+    with patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class):
         with patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}):
             model = PortkeyModel(model_name="gpt-4o", model_kwargs={"temperature": 0.7})
 
@@ -112,14 +112,14 @@ def test_portkey_model_cost_tracking_ignore_errors():
     mock_client.chat.completions.create.return_value = mock_response
     mock_portkey_class.return_value = mock_client
 
-    with patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class):
+    with patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class):
         with patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}):
             model = PortkeyModel(model_name="gpt-4o", cost_tracking="ignore_errors")
 
             initial_cost = GLOBAL_MODEL_STATS.cost
 
             with patch(
-                "minisweagent.models.portkey_model.litellm.cost_calculator.completion_cost",
+                "debugmaster.models.portkey_model.litellm.cost_calculator.completion_cost",
                 side_effect=ValueError("Model not found"),
             ):
                 messages = [{"role": "user", "content": "test"}]
@@ -154,11 +154,11 @@ def test_portkey_model_cost_validation_error():
     mock_client.chat.completions.create.return_value = mock_response
     mock_portkey_class.return_value = mock_client
 
-    with patch("minisweagent.models.portkey_model.Portkey", mock_portkey_class):
+    with patch("debugmaster.models.portkey_model.Portkey", mock_portkey_class):
         with patch.dict(os.environ, {"PORTKEY_API_KEY": "test-key"}):
             model = PortkeyModel(model_name="gpt-4o")
 
-            with patch("minisweagent.models.portkey_model.litellm.cost_calculator.completion_cost") as mock_cost:
+            with patch("debugmaster.models.portkey_model.litellm.cost_calculator.completion_cost") as mock_cost:
                 mock_cost.side_effect = ValueError("Model not found")
 
                 messages = [{"role": "user", "content": "test"}]

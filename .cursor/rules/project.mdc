@@ -11,11 +11,11 @@ alwaysApply: true
 The project is structured as
 
 ```bash
-minisweagent/__init__  # Protocols/interfaces for all base classes
-minisweagent/agents  # Agent control flow & loop
-minisweagent/environments  # Executing agent actions
-minisweagent/models  # LM interfaces
-minisweagent/run  # Run scripts that serve as an entry point
+debugmaster/__init__  # Protocols/interfaces for all base classes
+debugmaster/agents  # Agent control flow & loop
+debugmaster/environments  # Executing agent actions
+debugmaster/models  # LM interfaces
+debugmaster/run  # Run scripts that serve as an entry point
 ```
 
 - The project embraces polymorphism: Every individual class should be simple, but we offer alternatives

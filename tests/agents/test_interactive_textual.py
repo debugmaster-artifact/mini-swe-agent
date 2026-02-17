@@ -5,17 +5,19 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
+
+pytest.importorskip("pytest_asyncio", reason="pytest-asyncio not installed")
 import yaml
 
-from minisweagent.agents.interactive_textual import AddLogEmitCallback, SmartInputContainer, TextualAgent
-from minisweagent.environments.local import LocalEnvironment
-from minisweagent.models.test_models import DeterministicModel
+from debugmaster.agents.interactive_textual import AddLogEmitCallback, SmartInputContainer, TextualAgent
+from debugmaster.environments.local import LocalEnvironment
+from debugmaster.models.test_models import DeterministicModel
 
 
 @pytest.fixture
 def default_config():
     """Load default agent config from config/default.yaml"""
-    config_path = Path("src/minisweagent/config/default.yaml")
+    config_path = Path("src/debugmaster/config/default.yaml")
     with open(config_path) as f:
         config = yaml.safe_load(f)
     return config["agent"]
@@ -211,7 +213,7 @@ async def test_everything_integration_test(default_config):
 
 def test_messages_to_steps_edge_cases():
     """Test the _messages_to_steps function with various edge cases."""
-    from minisweagent.agents.interactive_textual import _messages_to_steps
+    from debugmaster.agents.interactive_textual import _messages_to_steps
 
     # Empty messages
     assert _messages_to_steps([]) == []
@@ -501,7 +503,7 @@ def test_log_handler_cleanup():
     initial_handlers = len(logging.getLogger().handlers)
 
     # Load default config
-    config_path = Path("src/minisweagent/config/default.yaml")
+    config_path = Path("src/debugmaster/config/default.yaml")
     with open(config_path) as f:
         default_config = yaml.safe_load(f)["agent"]
 

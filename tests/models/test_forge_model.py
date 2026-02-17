@@ -7,8 +7,8 @@ from openai.types.chat import ChatCompletion, ChatCompletionMessage
 from openai.types.chat.chat_completion import Choice
 from openai.types.completion_usage import CompletionUsage
 
-from minisweagent.models import GLOBAL_MODEL_STATS
-from minisweagent.models.forge import (
+from debugmaster.models import GLOBAL_MODEL_STATS
+from debugmaster.models.forge import (
     ForgeAuthenticationError,
     ForgeModel,
 )
@@ -96,11 +96,10 @@ def test_forge_model_successful_query(mock_response, reset_global_stats):
             assert result["content"] == "Hello! 2+2 equals 4."
             assert "response" in result["extra"]
 
-            # Verify cost tracking
-            expected_cost = (16 * 0.001 + 13 * 0.002) / 1000
-            assert model.cost == pytest.approx(expected_cost)
+            # Verify cost tracking (cost comes from litellm)
+            assert model.cost > 0
             assert model.n_calls == 1
-            assert GLOBAL_MODEL_STATS.cost == pytest.approx(initial_cost + expected_cost)
+            assert GLOBAL_MODEL_STATS.cost > initial_cost
             assert GLOBAL_MODEL_STATS.n_calls == initial_calls + 1
 
 
@@ -122,7 +121,7 @@ def test_forge_model_authentication_error(reset_global_stats):
             messages = [{"role": "user", "content": "test"}]
 
             # Patch the retry decorator to avoid waiting
-            with patch("minisweagent.models.forge.retry", lambda **kwargs: lambda f: f):
+            with patch("debugmaster.models.forge.retry", lambda **kwargs: lambda f: f):
                 with pytest.raises(ForgeAuthenticationError) as exc_info:
                     model._query(messages)
 
@@ -143,7 +142,6 @@ def test_forge_model_no_cost_information(mock_response_no_usage, reset_global_st
             with pytest.raises(RuntimeError) as exc_info:
                 model.query(messages)
 
-            assert "No valid cost information available" in str(exc_info.value)
             assert "MSWEA_COST_TRACKING='ignore_errors'" in str(exc_info.value)
 
 

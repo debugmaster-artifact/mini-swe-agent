@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "mini-swe-agent"
+name = "debugmaster"
 dynamic = ["version"]
 description = "Nano SWE Agent - A simple AI software engineering agent"
 readme = "README.md"
@@ -48,9 +48,9 @@ dependencies = [
 
 [project.optional-dependencies]
 full = [
-    "mini-swe-agent[dev]",
+    "debugmaster[dev]",
     "swe-rex>=1.4.0",
-    "mini-swe-agent[modal]",
+    "debugmaster[modal]",
 ]
 
 modal = [
@@ -82,23 +82,23 @@ Repository = "https://github.com/SWE-agent/mini-SWE-agent"
 "Bug Tracker" = "https://github.com/SWE-agent/mini-SWE-agent/issues"
 
 [project.scripts]
-mini = "minisweagent.run.mini:app"
-mini-swe-agent = "minisweagent.run.mini:app"
-mini-extra = "minisweagent.run.mini_extra:main"
-mini-e= "minisweagent.run.mini_extra:main"
+mini = "debugmaster.run.mini:app"
+mini-swe-agent = "debugmaster.run.mini:app"
+mini-extra = "debugmaster.run.mini_extra:main"
+mini-e= "debugmaster.run.mini_extra:main"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.dynamic]
-version = {attr = "minisweagent.__version__"}
+version = {attr = "debugmaster.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["minisweagent*"]
+include = ["debugmaster*"]
 
 [tool.setuptools.package-data]
-minisweagent = ["config/**/*"]
+debugmaster = ["config/**/*"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

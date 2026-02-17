@@ -87,10 +87,10 @@
         mini-extra  # extra utilities
         ```
 
-        Or pick a [run script](https://github.com/SWE-agent/mini-swe-agent/tree/main/src/minisweagent/run):
+        Or pick a [run script](https://github.com/SWE-agent/mini-swe-agent/tree/main/src/debugmaster/run):
 
         ```bash
-        python src/minisweagent/run/hello_world.py
+        python src/debugmaster/run/hello_world.py
         ```
 
         If you are planning to contribute, please also install the dev dependencies

@@ -3,15 +3,15 @@ from pathlib import Path
 import pytest
 import yaml
 
-from minisweagent.agents.default import DefaultAgent, NonTerminatingException
-from minisweagent.environments.local import LocalEnvironment
-from minisweagent.models.test_models import DeterministicModel
+from debugmaster.agents.default import DefaultAgent, NonTerminatingException
+from debugmaster.environments.local import LocalEnvironment
+from debugmaster.models.test_models import DeterministicModel
 
 
 @pytest.fixture
 def default_config():
     """Load default agent config from config/default.yaml"""
-    config_path = Path("src/minisweagent/config/default.yaml")
+    config_path = Path("src/debugmaster/config/default.yaml")
     with open(config_path) as f:
         config = yaml.safe_load(f)
     return config["agent"]

@@ -2,14 +2,14 @@
 
 !!! note "Anthropic Model class"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/anthropic.py)
+    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/debugmaster/models/anthropic.py)
 
     ??? note "Full source code"
 
         ```python
-        --8<-- "src/minisweagent/models/anthropic.py"
+        --8<-- "src/debugmaster/models/anthropic.py"
         ```
 
-::: minisweagent.models.anthropic
+::: debugmaster.models.anthropic
 
 {% include-markdown "../../_footer.md" %}

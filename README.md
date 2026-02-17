@@ -27,8 +27,8 @@ The `mini` agent is for
 
 Here's some details:
 
-- **Minimal**: Just [100 lines of python](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py) (+100 total for [env](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py),
-[model](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py), [script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py)) — no fancy dependencies!
+- **Minimal**: Just [100 lines of python](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/agents/default.py) (+100 total for [env](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/environments/local.py),
+[model](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/models/litellm_model.py), [script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/debugmaster/run/hello_world.py)) — no fancy dependencies!
 - **Performant:** Scores >74% on the [SWE-bench verified benchmark](https://www.swebench.com/) benchmark; starts faster than Claude Code
 - **Deployable:** In addition to local envs, you can use **docker**, **podman**, **singularity**, **apptainer**, and more
 - **Cutting edge:** Built by the Princeton & Stanford team behind [SWE-bench](https://swebench.com) and [SWE-agent](https://swe-agent.com).

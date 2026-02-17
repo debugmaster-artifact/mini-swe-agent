@@ -2,12 +2,12 @@
 
 !!! note "DefaultAgent class"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)
+    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/debugmaster/agents/default.py)
 
     ??? note "Full source code"
 
         ```python
-        --8<-- "src/minisweagent/agents/default.py"
+        --8<-- "src/debugmaster/agents/default.py"
         ```
 
 !!! tip "Understanding the control flow"
@@ -18,12 +18,12 @@
         <img src="../../../assets/mini_control_flow.svg" alt="Agent control flow" style="max-width: 500px;" />
     </div>
 
-::: minisweagent.agents.default.AgentConfig
+::: debugmaster.agents.default.AgentConfig
 
-::: minisweagent.agents.default.DefaultAgent
+::: debugmaster.agents.default.DefaultAgent
 
-::: minisweagent.agents.default.NonTerminatingException
+::: debugmaster.agents.default.NonTerminatingException
 
-::: minisweagent.agents.default.TerminatingException
+::: debugmaster.agents.default.TerminatingException
 
 {% include-markdown "../../_footer.md" %}
